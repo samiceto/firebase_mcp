@@ -1,0 +1,81 @@
+Here is the clean, copyable Markdown code for your `README.md` or `BROWSER_MCP_WSL_GUIDE.md` file.
+
+```markdown
+# Integrating Browser MCP Server with WSL2
+
+This guide explains how to set up the `@agent-infra/mcp-server-browser` on Ubuntu 24.04 (WSL2) based on a successful manual deployment.
+
+---
+
+## Prerequisites
+* **WSL2:** Ubuntu 24.04 LTS.
+* **Node.js:** v22.21.1 (installed via NVM).
+* **Environment:** `npx` and `npm` must be correctly mapped in your `$PATH`.
+
+---
+
+## Step 1: Install and Verify the Server
+Ensure the MCP server package is installed and available in your environment.
+
+```bash
+# Install globally to your NVM version
+npm install -g @agent-infra/mcp-server-browser
+
+# Verify the binary is found
+which mcp-server-browser
+
+```
+
+---
+
+## Step 2: Clean the Environment
+
+Before starting the server, ensure no previous instances are hanging or "zombie" processes are locking the port.
+
+```bash
+# Kill any process currently using the MCP port
+pkill -f mcp-server-browser || true
+
+# Verify port 8089 is clear
+ss -lntp | grep 8089 || echo "Port is free"
+
+```
+
+---
+
+## Step 3: Launch the Browser MCP
+
+Run the server using `npx` to ensure it uses the correct local dependencies. Using the `--headless` flag allows it to run within the WSL subsystem without requiring a GUI window.
+
+```bash
+npx @agent-infra/mcp-server-browser --port 8089 --headless
+
+```
+
+**Expected Output:**
+
+> `Streamable HTTP MCP Server listening at http://[::]:8089/mcp`
+> `SSE MCP Server listening at http://[::]:8089/sse`
+
+---
+
+## Step 4: Verify Integration
+
+Once the server is running, check your Claude client status. You should see a confirmation box similar to this:
+
+* **Status:** ✔ connected
+* **Capabilities:** tools · resources
+* **Tools:** 21 tools (including `Maps`, `click`, `screenshot`, etc.)
+
+---
+
+## Troubleshooting Tips for WSL
+
+| Issue | Resolution |
+| --- | --- |
+| **Zombie Processes** | WSL login often warns about "1 zombie process." Use `top` or `ps aux` to find and `kill -9` any defunct Node processes. |
+| **Network Binding** | The server logs show listening on `[::]`, which means it is listening on all interfaces (localhost and WSL IP). |
+| **Port Conflicts** | If port 8089 is blocked, change it using the `--port` flag and update your client settings to match. |
+| **Terminal Hangs** | If the server stops responding to `Ctrl+C`, use `killall -9 node` from another WSL terminal. |
+
+---
