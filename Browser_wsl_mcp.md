@@ -1,6 +1,3 @@
-Here is the clean, copyable Markdown code for your `README.md` or `BROWSER_MCP_WSL_GUIDE.md` file.
-
-```markdown
 # Integrating Browser MCP Server with WSL2
 
 This guide explains how to set up the `@agent-infra/mcp-server-browser` on Ubuntu 24.04 (WSL2) based on a successful manual deployment.
